@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
@@ -109,7 +110,7 @@ const DateTimePicker = ({ date, setDate }: DateTimePickerProps) => {
             {date ? format(date, "PPP p") : <span>Pick a date & time</span>}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent className="w-auto p-0" align="start" side="bottom">
           <div className="p-4 min-w-[320px]">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-medium">

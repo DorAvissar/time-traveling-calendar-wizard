@@ -82,13 +82,7 @@ const TimeSelect = ({ date, onTimeChange }: TimeSelectProps) => {
             <span>{hours.toString().padStart(2, '0')}:{minutes.toString().padStart(2, '0')}</span>
           </Button>
         </PopoverTrigger>
-        <PopoverContent 
-          className="w-auto p-4 shadow-md" 
-          align="center" 
-          side="top"
-          sideOffset={5}
-          avoidCollisions={false}
-        >
+        <PopoverContent className="w-auto p-4" align="center" side="bottom" sideOffset={4}>
           <div className="flex items-center justify-center space-x-4">
             {/* Hours */}
             <div className="flex flex-col items-center">

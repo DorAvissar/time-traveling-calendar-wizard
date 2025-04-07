@@ -5,6 +5,11 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Clock, ChevronUp, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface TimeSelectProps {
   date: Date | undefined;
@@ -14,6 +19,7 @@ interface TimeSelectProps {
 const TimeSelect = ({ date, onTimeChange }: TimeSelectProps) => {
   const [hours, setHours] = useState<number>(date?.getHours() || 12);
   const [minutes, setMinutes] = useState<number>(date?.getMinutes() || 0);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (date) {
@@ -69,69 +75,79 @@ const TimeSelect = ({ date, onTimeChange }: TimeSelectProps) => {
         <span className="text-sm font-medium">Time</span>
       </div>
       
-      <div className="flex items-center justify-center space-x-4">
-        {/* Hours */}
-        <div className="flex flex-col items-center">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-8 w-8 p-0" 
-            onClick={incrementHours}
-          >
-            <ChevronUp className="h-4 w-4" />
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
+        <PopoverTrigger asChild>
+          <Button variant="outline" className="w-full justify-start text-left">
+            <Clock className="mr-2 h-4 w-4" />
+            <span>{hours.toString().padStart(2, '0')}:{minutes.toString().padStart(2, '0')}</span>
           </Button>
-          
-          <Input
-            type="text"
-            value={hours.toString().padStart(2, '0')}
-            onChange={handleHoursChange}
-            className="w-14 text-center"
-          />
-          
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-8 w-8 p-0" 
-            onClick={decrementHours}
-          >
-            <ChevronDown className="h-4 w-4" />
-          </Button>
-          
-          <Label className="text-xs mt-1">Hours</Label>
-        </div>
-        
-        <div className="text-xl font-bold">:</div>
-        
-        {/* Minutes */}
-        <div className="flex flex-col items-center">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-8 w-8 p-0" 
-            onClick={incrementMinutes}
-          >
-            <ChevronUp className="h-4 w-4" />
-          </Button>
-          
-          <Input
-            type="text"
-            value={minutes.toString().padStart(2, '0')}
-            onChange={handleMinutesChange}
-            className="w-14 text-center"
-          />
-          
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-8 w-8 p-0" 
-            onClick={decrementMinutes}
-          >
-            <ChevronDown className="h-4 w-4" />
-          </Button>
-          
-          <Label className="text-xs mt-1">Minutes</Label>
-        </div>
-      </div>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-4" align="center" side="bottom" sideOffset={4}>
+          <div className="flex items-center justify-center space-x-4">
+            {/* Hours */}
+            <div className="flex flex-col items-center">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-8 w-8 p-0" 
+                onClick={incrementHours}
+              >
+                <ChevronUp className="h-4 w-4" />
+              </Button>
+              
+              <Input
+                type="text"
+                value={hours.toString().padStart(2, '0')}
+                onChange={handleHoursChange}
+                className="w-14 text-center"
+              />
+              
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-8 w-8 p-0" 
+                onClick={decrementHours}
+              >
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+              
+              <Label className="text-xs mt-1">Hours</Label>
+            </div>
+            
+            <div className="text-xl font-bold">:</div>
+            
+            {/* Minutes */}
+            <div className="flex flex-col items-center">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-8 w-8 p-0" 
+                onClick={incrementMinutes}
+              >
+                <ChevronUp className="h-4 w-4" />
+              </Button>
+              
+              <Input
+                type="text"
+                value={minutes.toString().padStart(2, '0')}
+                onChange={handleMinutesChange}
+                className="w-14 text-center"
+              />
+              
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-8 w-8 p-0" 
+                onClick={decrementMinutes}
+              >
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+              
+              <Label className="text-xs mt-1">Minutes</Label>
+            </div>
+          </div>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 };

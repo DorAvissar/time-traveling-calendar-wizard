@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
@@ -145,8 +146,9 @@ const DateTimePicker = ({ date, setDate }: DateTimePickerProps) => {
           sideOffset={5}
           alignOffset={0}
           avoidCollisions={false}
+          style={{ width: "var(--radix-popover-trigger-width)" }}
         >
-          <div className="p-4 min-w-[320px]">
+          <div className="p-4 w-full">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-medium">
                 {currentStep === "year" && "Select Year"}

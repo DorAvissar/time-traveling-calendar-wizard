@@ -5,6 +5,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Index = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [timeFormat, setTimeFormat] = useState<"12h" | "24h">("12h");
+
+  const formatDate = (date: Date) => {
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: timeFormat === "24h" ? "2-digit" : "numeric",
+      minute: "2-digit",
+      hour12: timeFormat === "12h"
+    };
+    return date.toLocaleString('en-US', options);
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-indigo-50 to-purple-50 p-4">
@@ -19,10 +33,11 @@ const Index = () => {
               Select Date & Time
             </CardTitle>
           </CardHeader>
-          <CardContent className="flex justify-center">
+          <CardContent className="flex justify-center flex-col items-center">
             <DateTimePicker 
               date={selectedDate} 
-              setDate={setSelectedDate} 
+              setDate={setSelectedDate}
+              onTimeFormatChange={setTimeFormat}
             />
           </CardContent>
         </Card>
@@ -34,14 +49,7 @@ const Index = () => {
             </CardHeader>
             <CardContent>
               <p className="text-center text-lg font-medium text-indigo-600">
-                {selectedDate.toLocaleString('en-US', {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
-                })}
+                {formatDate(selectedDate)}
               </p>
             </CardContent>
           </Card>

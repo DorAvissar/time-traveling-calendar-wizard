@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -11,9 +10,14 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 interface TimeSelectProps {
   date: Date | undefined;
   onTimeChange: (hours: number, minutes: number, period: "AM" | "PM") => void;
+  onTimeFormatChange?: (format: "12h" | "24h") => void;
 }
 
-const TimeSelect = ({ date, onTimeChange }: TimeSelectProps) => {
+const TimeSelect = ({ 
+  date, 
+  onTimeChange, 
+  onTimeFormatChange 
+}: TimeSelectProps) => {
   const [hours, setHours] = useState<number>(date ? (date.getHours() % 12 || 12) : 12);
   const [minutes, setMinutes] = useState<number>(date?.getMinutes() || 0);
   const [period, setPeriod] = useState<"AM" | "PM">(date?.getHours() >= 12 ? "PM" : "AM");
@@ -111,6 +115,7 @@ const TimeSelect = ({ date, onTimeChange }: TimeSelectProps) => {
     }
     
     setTimeFormat(value);
+    onTimeFormatChange?.(value);
   };
 
   const updateTime = (h: number, m: number, p: "AM" | "PM") => {

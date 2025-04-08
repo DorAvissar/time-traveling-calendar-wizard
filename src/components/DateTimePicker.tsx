@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
@@ -22,11 +21,16 @@ import {
 interface DateTimePickerProps {
   date: Date | undefined;
   setDate: (date: Date | undefined) => void;
+  onTimeFormatChange?: (format: "12h" | "24h") => void;
 }
 
 type SelectionStep = "year" | "month" | "day" | "time";
 
-const DateTimePicker = ({ date, setDate }: DateTimePickerProps) => {
+const DateTimePicker = ({ 
+  date, 
+  setDate, 
+  onTimeFormatChange 
+}: DateTimePickerProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState<SelectionStep>("year");
   const [tempDate, setTempDate] = useState<Date>(date || new Date());
@@ -122,6 +126,10 @@ const DateTimePicker = ({ date, setDate }: DateTimePickerProps) => {
     const now = new Date();
     now.setHours(0, 0, 0, 0);
     return date < now;
+  };
+
+  const handleTimeFormatChange = (format: "12h" | "24h") => {
+    onTimeFormatChange?.(format);
   };
 
   return (
@@ -224,6 +232,7 @@ const DateTimePicker = ({ date, setDate }: DateTimePickerProps) => {
                 <TimeSelect
                   date={tempDate}
                   onTimeChange={handleTimeChange}
+                  onTimeFormatChange={handleTimeFormatChange}
                 />
 
                 <div className="flex justify-end space-x-2 mt-4">

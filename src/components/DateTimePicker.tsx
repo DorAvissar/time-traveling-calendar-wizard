@@ -32,16 +32,28 @@ const DateTimePicker = ({ date, setDate }: DateTimePickerProps) => {
   const [tempDate, setTempDate] = useState<Date>(date || new Date());
   
   const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 201 }, (_, i) => currentYear - 100 + i);
+  // Only include years from current year and future (starting with 2025 as specified)
+  const years = Array.from({ length: 50 }, (_, i) => Math.max(2025, currentYear) + i);
   
   const months = [
     "January", "February", "March", "April", "May", "June", 
     "July", "August", "September", "October", "November", "December"
   ];
 
+  // Get today's date at the start of the day for comparison
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   const handleYearSelect = (year: string) => {
     const newDate = new Date(tempDate);
     newDate.setFullYear(parseInt(year));
+    
+    // If the new date would be in the past, update month/day to today
+    if (newDate < today) {
+      newDate.setMonth(today.getMonth());
+      newDate.setDate(today.getDate());
+    }
+    
     setTempDate(newDate);
     setCurrentStep("month");
   };
@@ -50,6 +62,20 @@ const DateTimePicker = ({ date, setDate }: DateTimePickerProps) => {
     const monthIndex = months.findIndex(m => m === month);
     const newDate = new Date(tempDate);
     newDate.setMonth(monthIndex);
+    
+    // If the new date would be in the past, set day to first available day
+    if (newDate.getFullYear() === today.getFullYear() && 
+        newDate.getMonth() < today.getMonth()) {
+      newDate.setMonth(today.getMonth());
+    }
+    
+    // If the same year and month as today, ensure day is not in the past
+    if (newDate.getFullYear() === today.getFullYear() && 
+        newDate.getMonth() === today.getMonth() && 
+        newDate.getDate() < today.getDate()) {
+      newDate.setDate(today.getDate());
+    }
+    
     setTempDate(newDate);
     setCurrentStep("day");
   };
@@ -57,13 +83,15 @@ const DateTimePicker = ({ date, setDate }: DateTimePickerProps) => {
   const handleDaySelect = (selectedDate: Date | undefined) => {
     if (selectedDate) {
       const newDate = new Date(tempDate);
+      newDate.setFullYear(selectedDate.getFullYear());
+      newDate.setMonth(selectedDate.getMonth());
       newDate.setDate(selectedDate.getDate());
       setTempDate(newDate);
       setCurrentStep("time");
     }
   };
 
-  const handleTimeChange = (hours: number, minutes: number) => {
+  const handleTimeChange = (hours: number, minutes: number, period: "AM" | "PM") => {
     const newDate = new Date(tempDate);
     newDate.setHours(hours);
     newDate.setMinutes(minutes);
@@ -93,6 +121,13 @@ const DateTimePicker = ({ date, setDate }: DateTimePickerProps) => {
         setCurrentStep("day");
         break;
     }
+  };
+  
+  // Function to check if a date is in the past
+  const isDateInPast = (date: Date) => {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    return date < now;
   };
 
   return (
@@ -153,20 +188,28 @@ const DateTimePicker = ({ date, setDate }: DateTimePickerProps) => {
 
             {currentStep === "month" && (
               <div className="grid grid-cols-2 gap-2">
-                {months.map((month) => (
-                  <Button
-                    key={month}
-                    variant="outline"
-                    className={cn(
-                      "h-8",
-                      tempDate.getMonth() === months.indexOf(month) && 
-                      "bg-primary text-primary-foreground"
-                    )}
-                    onClick={() => handleMonthSelect(month)}
-                  >
-                    {month}
-                  </Button>
-                ))}
+                {months.map((month, index) => {
+                  // If it's the current year and the month is in the past, disable it
+                  const isDisabled = 
+                    tempDate.getFullYear() === today.getFullYear() && 
+                    index < today.getMonth();
+                  
+                  return (
+                    <Button
+                      key={month}
+                      variant="outline"
+                      className={cn(
+                        "h-8",
+                        tempDate.getMonth() === index && "bg-primary text-primary-foreground",
+                        isDisabled && "opacity-50 cursor-not-allowed"
+                      )}
+                      disabled={isDisabled}
+                      onClick={() => !isDisabled && handleMonthSelect(month)}
+                    >
+                      {month}
+                    </Button>
+                  );
+                })}
               </div>
             )}
 
@@ -176,6 +219,7 @@ const DateTimePicker = ({ date, setDate }: DateTimePickerProps) => {
                 month={tempDate}
                 selected={tempDate}
                 onSelect={handleDaySelect}
+                disabled={(date) => isDateInPast(date)}
                 initialFocus
                 className={cn("pointer-events-auto")}
               />

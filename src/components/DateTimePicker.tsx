@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
@@ -32,7 +31,6 @@ const DateTimePicker = ({ date, setDate }: DateTimePickerProps) => {
   const [tempDate, setTempDate] = useState<Date>(date || new Date());
   
   const currentYear = new Date().getFullYear();
-  // Only include years from current year and future (starting with 2025 as specified)
   const years = Array.from({ length: 50 }, (_, i) => Math.max(2025, currentYear) + i);
   
   const months = [
@@ -40,7 +38,6 @@ const DateTimePicker = ({ date, setDate }: DateTimePickerProps) => {
     "July", "August", "September", "October", "November", "December"
   ];
 
-  // Get today's date at the start of the day for comparison
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -48,7 +45,6 @@ const DateTimePicker = ({ date, setDate }: DateTimePickerProps) => {
     const newDate = new Date(tempDate);
     newDate.setFullYear(parseInt(year));
     
-    // If the new date would be in the past, update month/day to today
     if (newDate < today) {
       newDate.setMonth(today.getMonth());
       newDate.setDate(today.getDate());
@@ -63,13 +59,11 @@ const DateTimePicker = ({ date, setDate }: DateTimePickerProps) => {
     const newDate = new Date(tempDate);
     newDate.setMonth(monthIndex);
     
-    // If the new date would be in the past, set day to first available day
     if (newDate.getFullYear() === today.getFullYear() && 
         newDate.getMonth() < today.getMonth()) {
       newDate.setMonth(today.getMonth());
     }
     
-    // If the same year and month as today, ensure day is not in the past
     if (newDate.getFullYear() === today.getFullYear() && 
         newDate.getMonth() === today.getMonth() && 
         newDate.getDate() < today.getDate()) {
@@ -123,7 +117,6 @@ const DateTimePicker = ({ date, setDate }: DateTimePickerProps) => {
     }
   };
   
-  // Function to check if a date is in the past
   const isDateInPast = (date: Date) => {
     const now = new Date();
     now.setHours(0, 0, 0, 0);
@@ -189,7 +182,6 @@ const DateTimePicker = ({ date, setDate }: DateTimePickerProps) => {
             {currentStep === "month" && (
               <div className="grid grid-cols-2 gap-2">
                 {months.map((month, index) => {
-                  // If it's the current year and the month is in the past, disable it
                   const isDisabled = 
                     tempDate.getFullYear() === today.getFullYear() && 
                     index < today.getMonth();

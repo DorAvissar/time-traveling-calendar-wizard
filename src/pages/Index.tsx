@@ -21,9 +21,9 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-indigo-50 to-purple-50 p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-indigo-50 to-purple-50 p-4 pt-0 md:pt-0">
       <div className="max-w-md w-full">
-        <h1 className="text-3xl font-bold text-center text-indigo-700 mb-8">
+        <h1 className="text-3xl font-bold text-center text-indigo-700 mb-4">
           Time Traveling Calendar Wizard
         </h1>
         
@@ -43,7 +43,7 @@ const Index = () => {
         </Card>
 
         {selectedDate && (
-          <Card className="w-full mt-6 shadow-lg">
+          <Card className="w-full mt-4 shadow-lg">
             <CardHeader>
               <CardTitle className="text-lg">Your Selected Moment</CardTitle>
             </CardHeader>

@@ -44,9 +44,6 @@ const Index = () => {
 
         {selectedDate && (
           <Card className="w-full shadow-lg">
-            <CardHeader>
-              <CardTitle className="text-lg">Your Selected Moment</CardTitle>
-            </CardHeader>
             <CardContent>
               <p className="text-center text-lg font-medium text-indigo-600">
                 {formatDate(selectedDate)}

@@ -1,22 +1,15 @@
 import React, { useState } from "react";
 import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import TimeSelect from "./TimeSelect";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import TimeSelect from "./TimeSelect";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 interface DateTimePickerProps {
   date: Date | undefined;
@@ -34,6 +27,7 @@ const DateTimePicker = ({
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState<SelectionStep>("year");
   const [tempDate, setTempDate] = useState<Date>(date || new Date());
+  const [timeFormat, setTimeFormat] = useState<"12h" | "24h">("12h");
   
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 50 }, (_, i) => Math.max(2025, currentYear) + i);
@@ -128,7 +122,23 @@ const DateTimePicker = ({
     return date < now;
   };
 
+  const formatButtonDate = (selectedDate: Date | undefined) => {
+    if (!selectedDate) return "Pick a date & time";
+    
+    const formatOptions: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: timeFormat === "24h" ? "2-digit" : "numeric",
+      minute: "2-digit",
+      hour12: timeFormat === "12h"
+    };
+    
+    return selectedDate.toLocaleString('en-US', formatOptions);
+  };
+
   const handleTimeFormatChange = (format: "12h" | "24h") => {
+    setTimeFormat(format);
     onTimeFormatChange?.(format);
   };
 
@@ -144,7 +154,7 @@ const DateTimePicker = ({
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {date ? format(date, "PPP p") : <span>Pick a date & time</span>}
+            {formatButtonDate(date)}
           </Button>
         </PopoverTrigger>
         <PopoverContent 
